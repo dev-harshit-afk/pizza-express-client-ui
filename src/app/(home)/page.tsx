@@ -1,5 +1,46 @@
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
+import Product from "./_components/Product";
+
+const pizza = [
+  {
+    id: 1,
+    name: "Margherita",
+    description: "Classic delight with 100% real mozzarella cheese",
+    price: 10.99,
+    image: "/pizza-main.png",
+  },
+  {
+    id: 2,
+    name: "Margherita",
+    description: "Classic delight with 100% real mozzarella cheese",
+    price: 10.99,
+    image: "/pizza-main.png",
+  },
+  {
+    id: 3,
+    name: "Margherita",
+    description: "Classic delight with 100% real mozzarella cheese",
+    price: 10.99,
+    image: "/pizza-main.png",
+  },
+  {
+    id: 4,
+    name: "Margherita",
+    description: "Classic delight with 100% real mozzarella cheese",
+    price: 10.99,
+    image: "/pizza-main.png",
+  },
+  {
+    id: 5,
+    name: "Margherita",
+    description: "Classic delight with 100% real mozzarella cheese",
+    price: 10.99,
+    image: "/pizza-main.png",
+  },
+];
+
 export default function Home() {
   return (
     <>
@@ -27,6 +68,35 @@ export default function Home() {
               alt="Delicious Pizza"
             />
           </div>
+        </div>
+      </section>
+      <section>
+        <div className=" mx-auto container py-12">
+          <Tabs defaultValue="account" className="">
+            <TabsList>
+              <TabsTrigger value="pizza" className="text-lg">
+                Pizza
+              </TabsTrigger>
+              <TabsTrigger value="beverages" className="text-lg">
+                Beverage
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="pizza">
+              <div className="grid grid-cols-4 gap-6 mt-6">
+                {pizza.map((product) => (
+                  <Product key={product.id} product={product} />
+                ))}
+              </div>
+            </TabsContent>
+            <TabsContent value="beverages">
+              {" "}
+              <div className="grid grid-cols-4 gap-6 mt-6">
+                {pizza.map((product) => (
+                  <Product key={product.id} product={product} />
+                ))}
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </section>
     </>
