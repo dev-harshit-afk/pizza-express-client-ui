@@ -10,13 +10,29 @@ import {
 import Link from "next/link";
 import { Phone, ShoppingBasket } from "lucide-react";
 import { Button } from "../ui/button";
+import { Tenant } from "@/lib/types";
 const items = [
   { label: "Light", value: "light" },
   { label: "Dark", value: "dark" },
   { label: "System", value: "system" },
 ];
 
-const Header = () => {
+const Header = async () => {
+  const tenantsResponse = await fetch(
+    `${process.env.BACKEND_URL}/api/auth/tenants?perPage=100`,
+    {
+      next: {
+        revalidate: 3600, // 1 hour
+      },
+    },
+  );
+
+  if (!tenantsResponse.ok) {
+    throw new Error("Failed to fetch tenants");
+  }
+
+  const restaurants: { data: Tenant[] } = await tenantsResponse.json();
+
   return (
     <header className=" bg-white ">
       <nav className=" mx-auto container py-5 flex justify-between items-center">
@@ -44,13 +60,13 @@ const Header = () => {
 
           <Select items={items}>
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Theme" />
+              <SelectValue placeholder="Tenant" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                {items.map((item) => (
-                  <SelectItem key={item.value} value={item.value}>
-                    {item.label}
+                {restaurants.data.map((tenant: Tenant) => (
+                  <SelectItem key={tenant.id} value={tenant.id}>
+                    {tenant.name}
                   </SelectItem>
                 ))}
               </SelectGroup>
@@ -80,9 +96,7 @@ const Header = () => {
               +91 1239999123
             </span>
           </div>
-          <Button size="sm">
-            Logout
-          </Button>
+          <Button size="sm">Logout</Button>
         </div>
       </nav>
     </header>

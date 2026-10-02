@@ -29,21 +29,15 @@ import { Badge, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import ToppingList from "./topping-list";
+import { Product as ProductType } from "@/lib/types";
 
-export type Product = {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-};
-
-const Product = ({ product }: { product: Product }) => {
+const Product = ({ product }: { product: ProductType }) => {
+  console.log("product", product);
   return (
     <Card className="border-none rouneded-xl">
       <CardHeader className="flex justify-center items-center">
         <Image
-          src={product.image}
+          src={product.imageUrl || "/pizza-main.png"}
           width={150}
           height={150}
           alt={product.name}
@@ -57,7 +51,7 @@ const Product = ({ product }: { product: Product }) => {
         <p>
           <span className="">From</span>
           <span className="text-lg font-bold text-primary">
-            ₹{product.price}
+            ₹ 100
           </span>
         </p>
         <Dialog>
@@ -68,7 +62,7 @@ const Product = ({ product }: { product: Product }) => {
             <div className=" flex ">
               <div className="p-8">
                 <Image
-                  src={product.image}
+                  src={product.imageUrl || "/pizza-main.png"}
                   width={250}
                   height={250}
                   alt={product.name}
@@ -137,7 +131,7 @@ const Product = ({ product }: { product: Product }) => {
                 </div>
                 <div>
                   <h4 className="mt-6">Choose the crust</h4>
-                    <RadioGroup
+                  <RadioGroup
                     defaultValue="thin"
                     className="grid grid-cols-3 gap-4 mt-2"
                   >
@@ -174,15 +168,13 @@ const Product = ({ product }: { product: Product }) => {
                         />
                       </Field>
                     </FieldLabel>
-
-                  
                   </RadioGroup>
                 </div>
-                <ToppingList/>
+                <ToppingList />
                 <div className=" flex mt-12 justify-between">
                   <p className=" font-bold">Total:400</p>
                   <Button className="">
-                    <ShoppingCart/>
+                    <ShoppingCart />
                     Add to cart
                   </Button>
                 </div>
