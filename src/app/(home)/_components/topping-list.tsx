@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import ToppingCard, { Topping } from "./topping-card";
+import ToppingCard from "./topping-card";
+import { Topping } from "@/lib/types";
 
 // const toppings: Topping[] = [
 //   {
@@ -26,8 +27,13 @@ import ToppingCard, { Topping } from "./topping-card";
 //   },
 // ];
 
-const ToppingList = () => {
-  const [selectedToppings, setSelectedToppings] = useState<Topping[]>([]);
+const ToppingList = ({
+  selectedToppings,
+  handleToppingClick,
+}: {
+  selectedToppings: Topping[];
+  handleToppingClick: (topping: Topping) => void;
+}) => {
   const [toppings, setToppings] = useState<Topping[]>([]);
   useEffect(() => {
     const fetchToppings = async () => {
@@ -49,18 +55,6 @@ const ToppingList = () => {
     fetchToppings();
   }, []);
 
-  const handleToppingClick = (topping: Topping) => {
-    const isAlreadyClicked = selectedToppings.some(
-      (curr) => curr.id === topping.id,
-    );
-    if (isAlreadyClicked) {
-      setSelectedToppings((prev) =>
-        prev.filter((item) => item.id !== topping.id),
-      );
-      return;
-    }
-    setSelectedToppings((prev) => [...prev, topping]);
-  };
   return (
     <section className=" mt-6">
       <h3>Extra Topping</h3>

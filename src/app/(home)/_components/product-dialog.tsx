@@ -17,10 +17,34 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import ToppingList from "./topping-list";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
-import { Product as ProductType } from "@/lib/types";
-import { Suspense } from "react";
+import { Product as ProductType, Topping } from "@/lib/types";
+import { Suspense, useState } from "react";
 
 const ProductDialog = ({ product }: { product: ProductType }) => {
+  const [selectedToppings, setSelectedToppings] = useState<Topping[]>([]);
+
+  const [choosenConfig, setChoosenConfig] = useState<Record<string, string>>(
+    {},
+  );
+
+  const handleRadioChange = (key: string, value: string) => {
+    setChoosenConfig((prevConfig) => ({
+      ...prevConfig,
+      [key]: value,
+    }));
+  };
+  const handleToppingClick = (topping: Topping) => {
+    const isAlreadyClicked = selectedToppings.some(
+      (curr) => curr.id === topping.id,
+    );
+    if (isAlreadyClicked) {
+      setSelectedToppings((prev) =>
+        prev.filter((item) => item.id !== topping.id),
+      );
+      return;
+    }
+    setSelectedToppings((prev) => [...prev, topping]);
+  };
   return (
     <Dialog>
       <DialogTrigger className=" rounded-3xl bg-orange-200 hover:bg-primary cursor-pointer text-primary hover:text-white px-6 py-3 text-lg font-semibold">
@@ -47,6 +71,9 @@ const ProductDialog = ({ product }: { product: ProductType }) => {
                   <RadioGroup
                     defaultValue={value.availableOptions[0]}
                     className="grid grid-cols-3 gap-4 mt-2"
+                    onValueChange={(selectedValue) =>
+                      handleRadioChange(key, selectedValue)
+                    }
                   >
                     {value.availableOptions.map((option) => (
                       <FieldLabel
@@ -71,103 +98,12 @@ const ProductDialog = ({ product }: { product: ProductType }) => {
                 </div>
               ),
             )}
-            {/* <div>
-              <h4 className="mt-6">Choose the size</h4>
-              <RadioGroup
-                defaultValue="small"
-                className="grid grid-cols-3 gap-4 mt-2"
-              >
-                <FieldLabel
-                  htmlFor="small"
-                  className="cursor-pointer rounded-md border-2 p-1"
-                >
-                  <Field
-                    orientation="vertical"
-                    className="items-center justify-center"
-                  >
-                    <FieldTitle>Small</FieldTitle>
-                    <RadioGroupItem
-                      value="small"
-                      id="small"
-                      className="hidden"
-                    />
-                  </Field>
-                </FieldLabel>
 
-                <FieldLabel
-                  htmlFor="medium"
-                  className="cursor-pointer rounded-md border-2 p-1"
-                >
-                  <Field
-                    orientation="vertical"
-                    className="items-center justify-center"
-                  >
-                    <FieldTitle>Medium</FieldTitle>
-                    <RadioGroupItem
-                      value="medium"
-                      id="medium"
-                      className="hidden"
-                    />
-                  </Field>
-                </FieldLabel>
-
-                <FieldLabel
-                  htmlFor="large"
-                  className="cursor-pointer rounded-md border-2 p-1"
-                >
-                  <Field
-                    orientation="vertical"
-                    className="items-center justify-center"
-                  >
-                    <FieldTitle>Large</FieldTitle>
-                    <RadioGroupItem
-                      value="large"
-                      id="large"
-                      className="hidden"
-                    />
-                  </Field>
-                </FieldLabel>
-              </RadioGroup>
-            </div>
-            <div>
-              <h4 className="mt-6">Choose the crust</h4>
-              <RadioGroup
-                defaultValue="thin"
-                className="grid grid-cols-3 gap-4 mt-2"
-              >
-                <FieldLabel
-                  htmlFor="thin"
-                  className="cursor-pointer rounded-md border-2 p-1"
-                >
-                  <Field
-                    orientation="vertical"
-                    className="items-center justify-center"
-                  >
-                    <FieldTitle>Thin</FieldTitle>
-                    <RadioGroupItem value="thin" id="thin" className="hidden" />
-                  </Field>
-                </FieldLabel>
-
-                <FieldLabel
-                  htmlFor="thick"
-                  className="cursor-pointer rounded-md border-2 p-1"
-                >
-                  <Field
-                    orientation="vertical"
-                    className="items-center justify-center"
-                  >
-                    <FieldTitle>Thick</FieldTitle>
-                    <RadioGroupItem
-                      value="thick"
-                      id="thick"
-                      className="hidden"
-                    />
-                  </Field>
-                </FieldLabel>
-              </RadioGroup>
-            </div> */}
             <Suspense fallback={<div>Loading toppings...</div>}>
-              <ToppingList />
+              <ToppingList
+                selectedToppings={selectedToppings}
+                handleToppingClick={handleToppingClick}
+              />
             </Suspense>
 
             <div className=" flex mt-12 justify-between">

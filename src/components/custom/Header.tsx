@@ -8,9 +8,10 @@ import {
   SelectValue,
 } from "../ui/select";
 import Link from "next/link";
-import { Phone, ShoppingBasket } from "lucide-react";
+import { Phone } from "lucide-react";
 import { Button } from "../ui/button";
 import { Tenant } from "@/lib/types";
+import Cart from "./Cart";
 const items = [
   { label: "Light", value: "light" },
   { label: "Dark", value: "dark" },
@@ -59,7 +60,7 @@ const Header = async () => {
           </svg>
 
           <Select items={items}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-45">
               <SelectValue placeholder="Tenant" />
             </SelectTrigger>
             <SelectContent>
@@ -82,14 +83,7 @@ const Header = async () => {
               <Link href="/menu">Orders</Link>
             </li>
           </ul>
-          <div className="relative">
-            <Link href="/cart">
-              <ShoppingBasket className="hover:text-primary" />
-            </Link>
-            <span className="absolute -top-4 -right-5 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-[10px] text-white">
-              3
-            </span>
-          </div>
+          <Cart />
           <div className="flex items-center gap-x-2 ml-12">
             <Phone size={16} />
             <span className="text-sm font-medium text-muted-foreground">
