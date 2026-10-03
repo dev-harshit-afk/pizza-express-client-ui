@@ -19,13 +19,22 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { Product as ProductType, Topping } from "@/lib/types";
 import { Suspense, useState } from "react";
+import { useAppDispatch } from "@/lib/store/hooks";
+import { addToCart } from "@/lib/store/features/cart/cart-slice";
 
 const ProductDialog = ({ product }: { product: ProductType }) => {
   const [selectedToppings, setSelectedToppings] = useState<Topping[]>([]);
+  const dispatch = useAppDispatch();
 
-  const [choosenConfig, setChoosenConfig] = useState<Record<string, string>>(
-    {},
+  const defaultChoosenConfig: Record<string, string> = Object.fromEntries(
+    Object.entries(product.category.priceConfiguration).map(([key, value]) => [
+      key,
+      value.availableOptions[0],
+    ]),
   );
+
+  const [choosenConfig, setChoosenConfig] =
+    useState<Record<string, string>>(defaultChoosenConfig);
 
   const handleRadioChange = (key: string, value: string) => {
     setChoosenConfig((prevConfig) => ({
@@ -44,6 +53,20 @@ const ProductDialog = ({ product }: { product: ProductType }) => {
       return;
     }
     setSelectedToppings((prev) => [...prev, topping]);
+  };
+  const handleAddToCart = () => {
+    // Dispatch the action to add the product to the cart
+    // You can use Redux or any state management library here
+    // For example:
+    // dispatch(addToCart({ product, choosenConfig, selectedToppings }));
+    const cartItem = {
+      product,
+      choosenConfiguration: {
+        priceConfiguration: choosenConfig,
+        selectedToppings,
+      },
+    };
+    dispatch(addToCart(cartItem));
   };
   return (
     <Dialog>
@@ -108,7 +131,7 @@ const ProductDialog = ({ product }: { product: ProductType }) => {
 
             <div className=" flex mt-12 justify-between">
               <p className=" font-bold">Total:400</p>
-              <Button className="">
+              <Button className="" onClick={handleAddToCart}>
                 <ShoppingCart />
                 Add to cart
               </Button>
