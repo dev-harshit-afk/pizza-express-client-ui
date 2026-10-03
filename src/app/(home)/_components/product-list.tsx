@@ -62,21 +62,6 @@ const ProductList = async () => {
             </div>
           </TabsContent>
         ))}
-        {/* <TabsContent value="pizza">
-          <div className="grid grid-cols-4 gap-6 mt-6">
-            {pizza.map((product) => (
-              <Product key={product.id} product={product} />
-            ))}
-          </div>
-        </TabsContent>
-        <TabsContent value="beverages">
-          {" "}
-          <div className="grid grid-cols-4 gap-6 mt-6">
-            {pizza.map((product) => (
-              <Product key={product.id} product={product} />
-            ))}
-          </div>
-        </TabsContent> */}
       </Tabs>
     </div>
   );

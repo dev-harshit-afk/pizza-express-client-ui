@@ -41,3 +41,10 @@ export type Product = {
   createdAt: string;
   imageUrl?: string;
 };
+
+export type Topping = {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+};

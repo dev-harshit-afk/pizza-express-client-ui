@@ -1,16 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { CircleCheck } from "lucide-react"
 import Image from "next/image"
-
-
-export type Topping={
-    name:string,
-    id:string,
-    image:string,
-    price:number,
-    isAvailable:boolean
-
-}
+import { Topping } from "@/lib/types"
 
 type propType={
     topping:Topping,
