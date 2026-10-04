@@ -12,7 +12,6 @@ import { Product as ProductType } from "@/lib/types";
 import ProductDialog from "./product-dialog";
 
 const Product = ({ product }: { product: ProductType }) => {
-  console.log("product", product);
   return (
     <Card className="border-none rouneded-xl">
       <CardHeader className="flex justify-center items-center">

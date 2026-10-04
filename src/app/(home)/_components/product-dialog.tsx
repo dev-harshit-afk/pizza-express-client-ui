@@ -1,17 +1,5 @@
-import {
-  Field,
-  FieldContent,
-  FieldLabel,
-  FieldTitle,
-} from "@/components/ui/field";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Field, FieldLabel, FieldTitle } from "@/components/ui/field";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import Image from "next/image";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import ToppingList from "./topping-list";
@@ -19,10 +7,12 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { Product as ProductType, Topping } from "@/lib/types";
 import { Suspense, useMemo, useState } from "react";
-import { useAppDispatch } from "@/lib/store/hooks";
-import { addToCart } from "@/lib/store/features/cart/cart-slice";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { addToCart, CartItem } from "@/lib/store/features/cart/cart-slice";
+import { hashTheItem } from "@/lib/utils";
 
 const ProductDialog = ({ product }: { product: ProductType }) => {
+  const cartItems = useAppSelector((state) => state.cart.cartItems);
   const [selectedToppings, setSelectedToppings] = useState<Topping[]>([]);
   const dispatch = useAppDispatch();
 
@@ -54,19 +44,35 @@ const ProductDialog = ({ product }: { product: ProductType }) => {
     }
     setSelectedToppings((prev) => [...prev, topping]);
   };
-  const handleAddToCart = () => {
-    // Dispatch the action to add the product to the cart
-    // You can use Redux or any state management library here
-    // For example:
-    // dispatch(addToCart({ product, choosenConfig, selectedToppings }));
-    const cartItem = {
-      product,
+
+  const alreadyHasInCart = useMemo(() => {
+    const currentConfiguration = {
+      _id: product._id,
+      name: product.name,
+      image: product.imageUrl!,
+      priceConfiguration: product.priceConfiguration,
       choosenConfiguration: {
         priceConfiguration: choosenConfig,
         selectedToppings,
       },
+      qty: 1,
     };
-    dispatch(addToCart(cartItem));
+    const hash = hashTheItem(currentConfiguration);
+    return cartItems.some((item) => item.hash === hash);
+  }, [product, choosenConfig, selectedToppings, cartItems]);
+  const handleAddToCart = () => {
+    const cartItemToBeAdded: CartItem = {
+      _id: product._id,
+      name: product.name,
+      image: product.imageUrl!,
+      priceConfiguration: product.priceConfiguration,
+      choosenConfiguration: {
+        priceConfiguration: choosenConfig,
+        selectedToppings,
+      },
+      qty: 1,
+    };
+    dispatch(addToCart(cartItemToBeAdded));
   };
 
   const TotalPrice = useMemo(() => {
@@ -77,17 +83,14 @@ const ProductDialog = ({ product }: { product: ProductType }) => {
 
     const TotalChosenConfigPrice = Object.entries(choosenConfig).reduce(
       (acc, [key, value]) => {
-        console.log("key", key, value);
-        console.log("product.priceConfiguration", product.priceConfiguration);
         const priceConfig = product.priceConfiguration[key];
-        console.log("priceConfig", priceConfig);
         return acc + (priceConfig?.availableOptions[value] || 0);
       },
       0,
     );
 
     return TotalToppingsPrice + TotalChosenConfigPrice;
-  }, [choosenConfig, selectedToppings]);
+  }, [choosenConfig, selectedToppings, product]);
   return (
     <Dialog>
       <DialogTrigger className=" rounded-3xl bg-orange-200 hover:bg-primary cursor-pointer text-primary hover:text-white px-6 py-3 text-lg font-semibold">
@@ -153,9 +156,13 @@ const ProductDialog = ({ product }: { product: ProductType }) => {
 
             <div className=" flex mt-12 justify-between">
               <p className=" font-bold">{TotalPrice.toFixed(2)}</p>
-              <Button className="" onClick={handleAddToCart}>
+              <Button
+                className={alreadyHasInCart ? "bg-gray-700" : "bg-primary"}
+                disabled={alreadyHasInCart}
+                onClick={handleAddToCart}
+              >
                 <ShoppingCart />
-                Add to cart
+                {alreadyHasInCart ? "Already in cart" : "Add to cart"}
               </Button>
             </div>
           </div>

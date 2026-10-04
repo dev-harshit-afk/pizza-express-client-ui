@@ -29,13 +29,22 @@ export type ProductAttribute = {
   value: string | boolean;
 };
 
+export type ProductPriceConfiguration = {
+  [key: string]: {
+    priceType: "base" | "aditional";
+    availableOptions: {
+      [key: string]: number;
+    };
+  };
+};
+
 export type Product = {
   _id: string;
   name: string;
   image: string;
   description: string;
   category: Category;
-  priceConfiguration: PriceConfiguration;
+  priceConfiguration: ProductPriceConfiguration;
   attributes: ProductAttribute[];
   isPublish: boolean;
   createdAt: string;
@@ -43,7 +52,7 @@ export type Product = {
 };
 
 export type Topping = {
-  _id: string;
+  id: string;
   name: string;
   price: number;
   image: string;

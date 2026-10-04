@@ -38,16 +38,11 @@ const ToppingList = ({
   useEffect(() => {
     const fetchToppings = async () => {
       try {
-        console.log(
-          "Fetching toppings from backend...",
-          process.env.NEXT_PUBLIC_BACKEND_URL,
-        );
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/toppings?tenantId=4`,
         );
         const toppings = await response.json();
         setToppings(toppings);
-        console.log("Fetched toppings:", toppings);
       } catch (error) {
         console.error("Error fetching toppings:", error);
       }
@@ -63,7 +58,7 @@ const ToppingList = ({
           <ToppingCard
             selectedToppings={selectedToppings}
             handleClick={handleToppingClick}
-            key={topping._id}
+            key={topping.id}
             topping={topping}
           />
         ))}

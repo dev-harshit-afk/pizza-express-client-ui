@@ -17,12 +17,13 @@ export default function StoreProvider({
 
   if (isLocalStorageAvailable) {
     const cartItems = window.localStorage.getItem("cartItems");
-
-    try {
-      const parseItems = JSON.parse(cartItems as string);
-      store.dispatch(initializeCart(parseItems));
-    } catch (error) {
-      console.error("Error parsing cart items from localStorage:", error);
+    if (cartItems) {
+      try {
+        const parseItems = JSON.parse(cartItems as string);
+        store.dispatch(initializeCart(parseItems));
+      } catch (error) {
+        console.error("Error parsing cart items from localStorage:", error);
+      }
     }
   }
 
