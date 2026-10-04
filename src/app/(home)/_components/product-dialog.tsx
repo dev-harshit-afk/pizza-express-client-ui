@@ -4,14 +4,25 @@ import Image from "next/image";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import ToppingList from "./topping-list";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart } from "lucide-react";
+import { CircleCheck, ShoppingCart } from "lucide-react";
 import { Product as ProductType, Topping } from "@/lib/types";
 import { Suspense, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { addToCart, CartItem } from "@/lib/store/features/cart/cart-slice";
 import { hashTheItem } from "@/lib/utils";
+import { toast } from "@/components/ui/toast";
+
+const SuccessToastForAddToCart = () => {
+  return (
+    <div className=" flex gap-2">
+      <CircleCheck className=" text-primary items-center" />
+      <p>Item Added to the cart </p>
+    </div>
+  );
+};
 
 const ProductDialog = ({ product }: { product: ProductType }) => {
+  const [dialogOpen, setDialogOpen] = useState(false);
   const cartItems = useAppSelector((state) => state.cart.cartItems);
   const [selectedToppings, setSelectedToppings] = useState<Topping[]>([]);
   const dispatch = useAppDispatch();
@@ -73,6 +84,11 @@ const ProductDialog = ({ product }: { product: ProductType }) => {
       qty: 1,
     };
     dispatch(addToCart(cartItemToBeAdded));
+    toast.add({
+      title: <SuccessToastForAddToCart />,
+    });
+    setSelectedToppings([]);
+    setDialogOpen(false);
   };
 
   const TotalPrice = useMemo(() => {
@@ -92,7 +108,7 @@ const ProductDialog = ({ product }: { product: ProductType }) => {
     return TotalToppingsPrice + TotalChosenConfigPrice;
   }, [choosenConfig, selectedToppings, product]);
   return (
-    <Dialog>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger className=" rounded-3xl bg-orange-200 hover:bg-primary cursor-pointer text-primary hover:text-white px-6 py-3 text-lg font-semibold">
         Choose
       </DialogTrigger>

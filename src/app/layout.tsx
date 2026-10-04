@@ -3,6 +3,7 @@ import { Manrope } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/custom/Header";
 import StoreProvider from "./StateProvider";
+import { Toaster } from "@/components/ui/toast";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
 
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <body className="min-h-full flex flex-col">
           <Header />
           <main>{children}</main>
+          <Toaster/>
         </body>
       </StoreProvider>
     </html>
