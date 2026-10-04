@@ -2,7 +2,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Category, Product as ProductType } from "@/lib/types";
 import Product from "./Product";
 
-const ProductList = async () => {
+const ProductList = async ({
+  searchParams,
+}: {
+  searchParams: { restaurantId: string };
+}) => {
   const categoryResponse = await fetch(
     `${process.env.BACKEND_URL}/api/catalog/categories?perPage=100`,
     {
@@ -18,7 +22,7 @@ const ProductList = async () => {
   const categories = await categoryResponse.json();
 
   const productResponse = await fetch(
-    `${process.env.BACKEND_URL}/api/catalog/products?perPage=100&tenantId=1`,
+    `${process.env.BACKEND_URL}/api/catalog/products?perPage=100&tenantId=${searchParams.restaurantId}`,
     {
       next: {
         revalidate: 3600, // 1 hour

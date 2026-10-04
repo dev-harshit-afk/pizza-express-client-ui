@@ -1,22 +1,9 @@
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
 import Link from "next/link";
 import { Phone } from "lucide-react";
 import { Button } from "../ui/button";
 import { Tenant } from "@/lib/types";
 import Cart from "./Cart";
-const items = [
-  { label: "Light", value: "light" },
-  { label: "Dark", value: "dark" },
-  { label: "System", value: "system" },
-];
-
+import SelectTenant from "./Select-tenant";
 
 const Header = async () => {
   const tenantsResponse = await fetch(
@@ -32,7 +19,9 @@ const Header = async () => {
     throw new Error("Failed to fetch tenants");
   }
 
-  const restaurants: { data: Tenant[] } = await tenantsResponse.json();
+  const restaurants:  Tenant[]  = await tenantsResponse
+    .json()
+    .then((res) => res.data);
 
   return (
     <header className=" bg-white ">
@@ -58,21 +47,7 @@ const Header = async () => {
               fill="#484848"
             />
           </svg>
-
-          <Select items={items}>
-            <SelectTrigger className="w-45">
-              <SelectValue placeholder="Tenant" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {restaurants.data.map((tenant: Tenant) => (
-                  <SelectItem key={tenant.id} value={tenant.id}>
-                    {tenant.name}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <SelectTenant restaurants={restaurants} />
         </div>
         <div className="flex items-center gap-4">
           <ul className="flex items-center gap-4 text-sm font-medium text-muted-foreground">

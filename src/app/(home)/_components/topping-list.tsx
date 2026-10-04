@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import ToppingCard from "./topping-card";
 import { Topping } from "@/lib/types";
+import { useSearchParams } from "next/navigation";
 
 // const toppings: Topping[] = [
 //   {
@@ -34,12 +35,13 @@ const ToppingList = ({
   selectedToppings: Topping[];
   handleToppingClick: (topping: Topping) => void;
 }) => {
+  const searchParams = useSearchParams();
   const [toppings, setToppings] = useState<Topping[]>([]);
   useEffect(() => {
     const fetchToppings = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/toppings?tenantId=4`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/toppings?tenantId=${searchParams.get("restaurantId")}`,
         );
         const toppings = await response.json();
         setToppings(toppings);
@@ -48,7 +50,7 @@ const ToppingList = ({
       }
     };
     fetchToppings();
-  }, []);
+  }, [searchParams]);
 
   return (
     <section className=" mt-6">

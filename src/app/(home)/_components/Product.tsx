@@ -10,6 +10,7 @@ import Image from "next/image";
 import React from "react";
 import { Product as ProductType } from "@/lib/types";
 import ProductDialog from "./product-dialog";
+import { getFromPrice } from "@/lib/utils";
 
 const Product = ({ product }: { product: ProductType }) => {
   return (
@@ -29,7 +30,9 @@ const Product = ({ product }: { product: ProductType }) => {
       <CardFooter className="flex justify-between items-center">
         <p>
           <span className="">From</span>
-          <span className="text-lg font-bold text-primary">₹ 100</span>
+          <span className="text-lg font-bold text-primary">
+            ₹ {getFromPrice(product)}
+          </span>
         </p>
         <ProductDialog product={product} />
       </CardFooter>
