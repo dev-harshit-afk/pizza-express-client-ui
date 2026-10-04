@@ -18,7 +18,7 @@ import ToppingList from "./topping-list";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { Product as ProductType, Topping } from "@/lib/types";
-import { Suspense, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { addToCart } from "@/lib/store/features/cart/cart-slice";
 
@@ -68,6 +68,26 @@ const ProductDialog = ({ product }: { product: ProductType }) => {
     };
     dispatch(addToCart(cartItem));
   };
+
+  const TotalPrice = useMemo(() => {
+    const TotalToppingsPrice = selectedToppings.reduce(
+      (acc, curr) => acc + curr.price,
+      0,
+    );
+
+    const TotalChosenConfigPrice = Object.entries(choosenConfig).reduce(
+      (acc, [key, value]) => {
+        console.log("key", key, value);
+        console.log("product.priceConfiguration", product.priceConfiguration);
+        const priceConfig = product.priceConfiguration[key];
+        console.log("priceConfig", priceConfig);
+        return acc + (priceConfig?.availableOptions[value] || 0);
+      },
+      0,
+    );
+
+    return TotalToppingsPrice + TotalChosenConfigPrice;
+  }, [choosenConfig, selectedToppings]);
   return (
     <Dialog>
       <DialogTrigger className=" rounded-3xl bg-orange-200 hover:bg-primary cursor-pointer text-primary hover:text-white px-6 py-3 text-lg font-semibold">
@@ -122,15 +142,17 @@ const ProductDialog = ({ product }: { product: ProductType }) => {
               ),
             )}
 
-            <Suspense fallback={<div>Loading toppings...</div>}>
-              <ToppingList
-                selectedToppings={selectedToppings}
-                handleToppingClick={handleToppingClick}
-              />
-            </Suspense>
+            {product.category.name === "Pizza" && (
+              <Suspense fallback={<div>Loading toppings...</div>}>
+                <ToppingList
+                  selectedToppings={selectedToppings}
+                  handleToppingClick={handleToppingClick}
+                />
+              </Suspense>
+            )}
 
             <div className=" flex mt-12 justify-between">
-              <p className=" font-bold">Total:400</p>
+              <p className=" font-bold">{TotalPrice.toFixed(2)}</p>
               <Button className="" onClick={handleAddToCart}>
                 <ShoppingCart />
                 Add to cart

@@ -18,7 +18,7 @@ const ProductList = async () => {
   const categories = await categoryResponse.json();
 
   const productResponse = await fetch(
-    `${process.env.BACKEND_URL}/api/catalog/products?perPage=100&tenantId=4`,
+    `${process.env.BACKEND_URL}/api/catalog/products?perPage=100&tenantId=1`,
     {
       next: {
         revalidate: 3600, // 1 hour
@@ -44,12 +44,6 @@ const ProductList = async () => {
               {category.name}
             </TabsTrigger>
           ))}
-          {/* <TabsTrigger value="pizza" className="text-lg">
-                Pizza
-              </TabsTrigger>
-              <TabsTrigger value="beverages" className="text-lg">
-                Beverage
-              </TabsTrigger> */}
         </TabsList>
         {categories.data.map((category: Category) => (
           <TabsContent key={category._id} value={category._id}>

@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Select,
   SelectContent,
@@ -17,6 +16,7 @@ const items = [
   { label: "Dark", value: "dark" },
   { label: "System", value: "system" },
 ];
+
 
 const Header = async () => {
   const tenantsResponse = await fetch(
