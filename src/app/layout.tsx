@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/custom/Header";
 import StoreProvider from "./StateProvider";
 import { Toaster } from "@/components/ui/toast";
+import Refresher from "@/components/custom/Refresher";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
 
@@ -17,9 +18,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${manrope.variable} h-full antialiased`}>
       <StoreProvider>
         <body className="min-h-full flex flex-col">
-          <Header />
-          <main>{children}</main>
-          <Toaster/>
+          <Refresher>
+            <Header />
+            <main>{children}</main>
+            <Toaster />
+          </Refresher>
         </body>
       </StoreProvider>
     </html>
