@@ -9,6 +9,7 @@ import React, { useActionState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import login from "@/lib/actions/login";
 import { LoaderCircle } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const SubmitButton = () => {
   const { pending } = useFormStatus();
@@ -26,14 +27,19 @@ const SubmitButton = () => {
     </Button>
   );
 };
-
+const initialState = {
+  type: "",
+  message: "",
+};
 const Login = () => {
-  const initialState = {
-    type: "",
-    message: "",
-  };
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get("return-to") || "/";
+  const navigation = useRouter();
 
   const [state, formAction] = useActionState(login, initialState);
+  if (state.type === "success") {
+    navigation.push(returnTo);
+  }
   return (
     <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
       <div className="flex items-center justify-center py-12">
