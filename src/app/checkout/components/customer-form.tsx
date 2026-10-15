@@ -1,4 +1,4 @@
-"use client ";
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -7,22 +7,29 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
+import { getCustomer } from "@/lib/http/api";
+import { useQuery } from "@tanstack/react-query";
 import { Coins, CreditCard, Plus } from "lucide-react";
+import AddAddress from "./addAddress";
 
 const CustomerForm = () => {
+  const { data, isLoading } = useQuery({
+    queryKey: ["customer"],
+    queryFn: () => getCustomer().then((res) => res.data),
+  });
+
+  console.log("customer data", data);
+
+  if (isLoading) {
+    //need to add skeleton loader
+    return <div>Loading.....</div>;
+  }
+
   return (
     <div className="flex w-[1200px] gap-6 mt-16 mx-auto ">
       <Card className="w-3/5 border-none">
@@ -37,7 +44,8 @@ const CustomerForm = () => {
                 id="fname"
                 type="text"
                 className="w-full"
-                defaultValue=""
+                defaultValue={data.firstName}
+                disabled={true}
               />
             </div>
             <div className="grid gap-3">
@@ -46,7 +54,8 @@ const CustomerForm = () => {
                 id="lname"
                 type="text"
                 className="w-full"
-                defaultValue=""
+                defaultValue={data.lastName}
+                disabled={true}
               />
             </div>
             <div className="grid gap-3">
@@ -55,61 +64,30 @@ const CustomerForm = () => {
                 id="email"
                 type="text"
                 className="w-full"
-                defaultValue=""
+                defaultValue={data.email}
+                disabled={true}
               />
             </div>
             <div className="grid gap-3">
               <div>
                 <div className="flex items-center justify-between">
                   <Label htmlFor="name">Address</Label>
-                  <Dialog>
-                    <DialogTrigger>
-                      <Button size={"sm"} variant={"link"}>
-                        <Plus size={"16"} />
-                        <span className="ml-2">Add New Address</span>
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
-                      <DialogHeader>
-                        <DialogTitle>Add Address</DialogTitle>
-                        <DialogDescription>
-                          We can save your address for next time order.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="grid gap-4 py-4">
-                        <div>
-                          <Label htmlFor="address">Address</Label>
-                          <Textarea className="mt-2" />
-                        </div>
-                      </div>
-                      <DialogFooter>
-                        <Button type="submit">Save changes</Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+                  <AddAddress customerId={data._id} />
                 </div>
                 <RadioGroup
                   defaultValue="option-one"
                   className="grid grid-cols-2 gap-6 mt-2"
                 >
-                  <Card className="p-6">
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="option-one" id="option-one" />
-                      <Label htmlFor="option-one" className="leading-normal">
-                        123, ABC Street, Malad West, Mumbai, Maharashtra, India
-                        400064
-                      </Label>
-                    </div>
-                  </Card>
-                  <Card className="p-6">
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="option-two" id="option-two" />
-                      <Label htmlFor="option-two" className="leading-normal">
-                        Flat No. 501, Sunshine Apartments, Andheri East, Mumbai,
-                        Maharashtra, India 400069
-                      </Label>
-                    </div>
-                  </Card>
+                  {data.addresses.map((address: { text: string }) => (
+                    <Card className="p-6" key={address.text}>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="option-one" id="option-one" />
+                        <Label htmlFor="option-one" className="leading-normal">
+                          {address.text}
+                        </Label>
+                      </div>
+                    </Card>
+                  ))}
                 </RadioGroup>
               </div>
             </div>
